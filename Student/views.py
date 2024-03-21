@@ -1,6 +1,6 @@
 """Student views."""
 
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
