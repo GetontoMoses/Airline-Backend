@@ -13,18 +13,14 @@ class StudentSerializer(serializers.ModelSerializer):
         """Meta class for StudentSerializer."""
 
         model = User
-        fields = ["username", "email", "password", "confirm_password"]
-
-    def validate(self, data):
-        """Validate the data."""
-        if data["password"] != data["confirm_password"]:
-            raise serializers.ValidationError("The passwords do not match.")
-        return data
+        fields = ["username", "email", "password"]
 
     def create(self, validated_data):
         """Create a new user."""
         validated_data.pop("confirm_password", None)
         user = User.objects.create_user(
-            username=validated_data["username"], email=validated_data["email"], password=validated_data["password"]
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"],
         )
         return user
