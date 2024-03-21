@@ -17,7 +17,6 @@ class StudentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create a new user."""
-        validated_data.pop("confirm_password", None)
         user = User.objects.create_user(
             username=validated_data["username"],
             email=validated_data["email"],
