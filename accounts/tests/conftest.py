@@ -11,6 +11,7 @@ def user_data():
     """Return user data for testing."""
     return {
         "email": "test@example.com",
+        "username": "testuser",
         "password": "testpassword",
     }
 

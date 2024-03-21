@@ -33,6 +33,7 @@ def test_missing_email(user_data):
 def test_create_superuser(superuser):
     """Test creating a superuser."""
     assert superuser.email == "test@example.com"
+    assert superuser.username == "testuser"
     assert superuser.check_password("testpassword")
     assert superuser.is_staff
     assert superuser.is_superuser

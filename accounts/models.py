@@ -11,6 +11,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model with email as the unique identifier."""
 
     email = models.EmailField(unique=True)
+    username = models.CharField(max_length=150)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -18,7 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
         """Return str repr of the user."""
