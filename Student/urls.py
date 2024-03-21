@@ -1,6 +1,7 @@
 """urls for the student app."""
 
 from django.urls import path
+
 from .views import StudentSignUpView
 
 urlpatterns = [
