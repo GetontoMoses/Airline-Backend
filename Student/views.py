@@ -5,7 +5,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .serializers import StudentSerializer
+from .models import upload
+from .serializers import StudentSerializer, UploadSerializer
 
 User = get_user_model()
 
@@ -34,3 +35,10 @@ class UserLoginView(generics.ListCreateAPIView):
         else:
             # User authentication failed
             return Response({"error": "Invalid credentials"}, status=401)
+
+
+class UploadView(generics.ListCreateAPIView):
+    """View for uploading files."""
+
+    queryset = upload.objects.all()
+    serializer_class = UploadSerializer
