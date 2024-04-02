@@ -2,6 +2,7 @@
 
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import generics
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
@@ -40,5 +41,14 @@ class UserLoginView(generics.ListCreateAPIView):
 class UploadView(generics.ListCreateAPIView):
     """View for uploading files."""
 
+    parser_classes = [MultiPartParser]
     queryset = upload.objects.all()
     serializer_class = UploadSerializer
+
+    def perform_create(self, serializer):
+        """Handle file upload logic."""
+        serializer.save()
+
+    def post(self, request, *args, **kwargs):
+        """Overridden to handle file uploads."""
+        return self.create(request, *args, **kwargs)
