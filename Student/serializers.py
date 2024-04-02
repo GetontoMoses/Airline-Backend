@@ -34,4 +34,4 @@ class UploadSerializer(serializers.ModelSerializer):
         """Meta class for UploadSerializer."""
 
         model = upload
-        fields = ["name", "file", "year", "uploaded_at"]
+        fields = ["name", "image", "year", "uploaded_at"]
