@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     # Third party apps,
     "rest_framework",
     "corsheaders",
+    "django_filters",
+    
     # Local apps,
     "accounts",
-    "Student"
+    "Student",
 ]
 
 MIDDLEWARE = [
@@ -135,4 +137,5 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+   
 }

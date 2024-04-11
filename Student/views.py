@@ -1,6 +1,7 @@
 """Student views."""
 
 from django.contrib.auth import authenticate, get_user_model
+from django_filters import rest_framework as filters
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -51,5 +52,14 @@ class UploadView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """Overridden to handle file uploads."""
-        
+
         return self.create(request, *args, **kwargs)
+
+
+class UploadSearchAPIView(generics.ListCreateAPIView):
+    """API view for searching and querying uploaded images."""
+
+    queryset = upload.objects.all()
+    serializer_class = UploadSerializer
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_fields = ["name", "year"]
