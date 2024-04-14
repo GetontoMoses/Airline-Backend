@@ -2,13 +2,13 @@
 
 from django.contrib.auth import authenticate, get_user_model
 from django_filters import rest_framework as filters
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import upload
-from .serializers import StudentSerializer, UploadSerializer
+from .serializers import StudentSerializer, UploadSerializer, UserProfileSerializer
 
 User = get_user_model()
 
@@ -39,16 +39,24 @@ class UserLoginView(generics.ListCreateAPIView):
             return Response({"error": "Invalid credentials"}, status=401)
 
 
+class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
+    """View for user profile."""
+
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    lookup_field = "email"
+
+
 class UploadView(generics.ListCreateAPIView):
     """View for uploading files."""
 
     parser_classes = [MultiPartParser]
     queryset = upload.objects.all()
     serializer_class = UploadSerializer
-
+    
     def perform_create(self, serializer):
         """Handle file upload logic."""
-        serializer.save()
+        serializer.save(user=self.request.user)
 
     def post(self, request, *args, **kwargs):
         """Overridden to handle file uploads."""
@@ -63,3 +71,15 @@ class UploadSearchAPIView(generics.ListCreateAPIView):
     serializer_class = UploadSerializer
     filter_backends = [filters.DjangoFilterBackend]
     filterset_fields = ["name", "year"]
+
+
+class MyUploads(generics.RetrieveUpdateDestroyAPIView):
+    """View for listing user's uploads."""
+
+    queryset = upload.objects.all()
+    serializer_class = UploadSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        """Filter uploads by the current user."""
+        return upload.objects.filter(user_id=self.request.user.id)

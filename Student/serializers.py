@@ -25,6 +25,15 @@ class StudentSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
         )
         return user
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    """User serializer."""
+
+    class Meta:
+        """Meta class for UserSerializer."""
+
+        model = User
+        fields = ["username", "email"]
 
 
 class UploadSerializer(serializers.ModelSerializer):
@@ -34,4 +43,4 @@ class UploadSerializer(serializers.ModelSerializer):
         """Meta class for UploadSerializer."""
 
         model = upload
-        fields = ["name", "image", "year", "uploaded_at"]
+        fields = ["name", "file", "year", "uploaded_at"]
