@@ -15,7 +15,12 @@ class StudentSerializer(serializers.ModelSerializer):
         """Meta class for StudentSerializer."""
 
         model = User
-        fields = ["username", "email", "password"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "password",
+        ]
 
     def create(self, validated_data):
         """Create a new user."""
@@ -25,15 +30,6 @@ class StudentSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
         )
         return user
-    
-class UserProfileSerializer(serializers.ModelSerializer):
-    """User serializer."""
-
-    class Meta:
-        """Meta class for UserSerializer."""
-
-        model = User
-        fields = ["username", "email"]
 
 
 class UploadSerializer(serializers.ModelSerializer):
@@ -43,4 +39,11 @@ class UploadSerializer(serializers.ModelSerializer):
         """Meta class for UploadSerializer."""
 
         model = upload
-        fields = ["name", "file", "year", "uploaded_at"]
+        fields = [
+            "id",
+            "name",
+            "file",
+            "year",
+            "uploaded_at",
+            "user",
+        ]
