@@ -33,7 +33,7 @@ class UserLoginView(generics.ListCreateAPIView):
         if user is not None:
             # User authentication successful, generate JWT token
             access_token = AccessToken.for_user(user)
-            return Response({"access_token": str(access_token)})
+            return Response({"access_token": str(access_token),'user_id': user.id})
         else:
             # User authentication failed
             return Response({"error": "Invalid credentials"}, status=401)
