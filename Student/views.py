@@ -42,11 +42,9 @@ class UserLoginView(generics.ListCreateAPIView):
 class UploadView(generics.CreateAPIView):
     """View for uploading files."""
 
-    # parser_classes = [MultiPartParser]
     queryset = upload.objects.all()
     serializer_class = UploadSerializer
 
-    
     def post(self, request, *args, **kwargs):
         """Overridden to handle file uploads."""
 
@@ -63,23 +61,21 @@ class UploadSearchAPIView(generics.ListCreateAPIView):
 
 
 class MyUploadsList(generics.GenericAPIView):
-    """View for listing user's uploads."""
+    """View for listing all user's uploads."""
 
     serializer_class = UploadSerializer
 
     def get(self, request, *args, **kwargs):
-        print(kwargs)
         uploads = upload.objects.filter(user=kwargs["user"])
         serialized_uploads = UploadSerializer(uploads, many=True)
         return Response(serialized_uploads.data, status=200)
 
 
 class MyUploadsCRUD(generics.RetrieveUpdateDestroyAPIView):
-    """View for listing user's uploads."""
+    """View for viewing a single upload."""
 
     serializer_class = UploadSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, pk, *args, **kwargs):
-        queryset = upload.objects.filter(id=pk)
-        return self.retrieve(request, *args, **kwargs)
+    def get_queryset(self):
+        return upload.objects.filter(id=self.kwargs["pk"])
+    
