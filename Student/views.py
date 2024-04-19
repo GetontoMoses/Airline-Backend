@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import upload
-from .serializers import StudentSerializer, UploadSerializer, UserProfileSerializer
+from .serializers import StudentSerializer, UploadSerializer
 
 User = get_user_model()
 
@@ -39,25 +39,14 @@ class UserLoginView(generics.ListCreateAPIView):
             return Response({"error": "Invalid credentials"}, status=401)
 
 
-class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
-    """View for user profile."""
-
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
-    lookup_field = "email"
-
-
-class UploadView(generics.ListCreateAPIView):
+class UploadView(generics.CreateAPIView):
     """View for uploading files."""
 
-    parser_classes = [MultiPartParser]
+    # parser_classes = [MultiPartParser]
     queryset = upload.objects.all()
     serializer_class = UploadSerializer
-    
-    def perform_create(self, serializer):
-        """Handle file upload logic."""
-        serializer.save(user=self.request.user)
 
+    
     def post(self, request, *args, **kwargs):
         """Overridden to handle file uploads."""
 
@@ -73,13 +62,24 @@ class UploadSearchAPIView(generics.ListCreateAPIView):
     filterset_fields = ["name", "year"]
 
 
-class MyUploads(generics.RetrieveUpdateDestroyAPIView):
+class MyUploadsList(generics.GenericAPIView):
     """View for listing user's uploads."""
 
-    queryset = upload.objects.all()
+    serializer_class = UploadSerializer
+
+    def get(self, request, *args, **kwargs):
+        print(kwargs)
+        uploads = upload.objects.filter(user=kwargs["user"])
+        serialized_uploads = UploadSerializer(uploads, many=True)
+        return Response(serialized_uploads.data, status=200)
+
+
+class MyUploadsCRUD(generics.RetrieveUpdateDestroyAPIView):
+    """View for listing user's uploads."""
+
     serializer_class = UploadSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        """Filter uploads by the current user."""
-        return upload.objects.filter(user_id=self.request.user.id)
+    def get(self, request, pk, *args, **kwargs):
+        queryset = upload.objects.filter(id=pk)
+        return self.retrieve(request, *args, **kwargs)
