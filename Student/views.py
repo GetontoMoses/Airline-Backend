@@ -33,7 +33,13 @@ class UserLoginView(generics.ListCreateAPIView):
         if user is not None:
             # User authentication successful, generate JWT token
             access_token = AccessToken.for_user(user)
-            return Response({"access_token": str(access_token), "user_id": user.id})
+            return Response(
+                {
+                    "access_token": str(access_token),
+                    "user_id": user.id,
+                    "username": user.username,
+                }
+            )
         else:
             # User authentication failed
             return Response({"error": "Invalid credentials"}, status=401)
@@ -85,10 +91,16 @@ class MyUploadsCRUD(generics.RetrieveUpdateDestroyAPIView):
         self.perform_destroy(instance)
         return Response()
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+
+class UserProfileView(generics.RetrieveAPIView):
+    """View to retrieve a user's profile."""
+
+    serializer_class = StudentSerializer
+    queryset = User.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve user profile based on user ID."""
+        user_id = kwargs.get("pk")
+        user = self.get_object()
+        serializer = self.get_serializer(user)
         return Response(serializer.data)

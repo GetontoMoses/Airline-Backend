@@ -9,11 +9,13 @@ from .views import (
     UploadSearchAPIView,
     MyUploadsList,
     MyUploadsCRUD,
+    UserProfileView,
 )
 
 urlpatterns = [
     path("signup/", StudentSignUpView.as_view(), name="student_signup"),
     path("login/", UserLoginView.as_view(), name="user_login"),
+    path("user/<int:pk>/", UserProfileView.as_view(), name="user-profile"),
     path("upload/", UploadView.as_view(), name="upload"),
     path("search/", UploadSearchAPIView.as_view(), name="search"),
     path("myuploads/<int:user>/", MyUploadsList.as_view(), name="myuploads"),
