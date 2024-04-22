@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Flight
+from .models import Booking, Flight
 
 User = get_user_model()
 
@@ -31,4 +31,9 @@ class FlightSerializer(serializers.ModelSerializer):
         model = Flight
         fields = "__all__"
     
-    
+class BookingSerializer(serializers.ModelSerializer):
+    """Booking serializer."""
+
+    class Meta:
+        model = Booking
+        fields = ["id", "flight", "user", "adults", "children", "infants", "flight_class", "date_booked"]

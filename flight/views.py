@@ -7,8 +7,8 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .models import Flight
-from .serializers import FlightSerializer, UserSerializer
+from .models import Booking, Flight
+from .serializers import BookingSerializer, FlightSerializer, UserSerializer
 
 
 User = get_user_model()
@@ -67,3 +67,48 @@ class FlightSearch(generics.ListAPIView):
         "capacity",
         "price",
     ]
+
+
+class BookingView(generics.CreateAPIView):
+    """Booking view."""
+
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+
+
+class bookingInfo(generics.GenericAPIView):
+    """Retrieve a booking instance."""
+
+    serializer_class = BookingSerializer
+    
+    def get(self, request, *args, **kwargs):
+        booking = Booking.objects.filter(user=kwargs["user"])
+        serialized_bookings = BookingSerializer(booking, many=True)
+        return Response(serialized_bookings.data, status=200)
+
+class UserProfile(generics.RetrieveAPIView):
+    """User profile view."""
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve user profile based on user ID."""
+        user_id = kwargs.get("pk")
+        user = self.get_object()
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
+
+class BookingEdit(generics.RetrieveUpdateDestroyAPIView):
+    """View for editing a booking."""
+
+    serializer_class = BookingSerializer
+
+    def get_queryset(self):
+        queryset = Booking.objects.filter(id=self.kwargs["pk"])
+        return queryset
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response()
