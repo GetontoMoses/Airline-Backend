@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django_filters",
     # Local apps,
     "accounts",
-    "Student",
+    "flight",
 ]
 
 MIDDLEWARE = [
