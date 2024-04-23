@@ -6,6 +6,7 @@ from rest_framework import generics, permissions
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework import status
 
 from .models import Booking, Flight
 from .serializers import BookingSerializer, FlightSerializer, UserSerializer
@@ -71,9 +72,25 @@ class FlightSearch(generics.ListAPIView):
 
 class BookingView(generics.CreateAPIView):
     """Booking view."""
+    def post(self, request, *args, **kwargs):
+        serializer = BookingSerializer(data=request.data)
+        if serializer.is_valid():
+            flight_id = serializer.validated_data["flight"]
+            user_id = serializer.validated_data["user"]
 
-    queryset = Booking.objects.all()
-    serializer_class = BookingSerializer
+            # Check if a booking with the same flight ID and user ID exists
+            existing_booking = Booking.objects.filter(
+                flight=flight_id, user=user_id
+            ).exists()
+            if existing_booking:
+                return Response(
+                    {"error": "User has already booked this flight"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class bookingInfo(generics.GenericAPIView):
