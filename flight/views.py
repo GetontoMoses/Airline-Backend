@@ -54,6 +54,20 @@ class FlightList(generics.ListCreateAPIView):
     serializer_class = FlightSerializer
 
 
+class SingleFlight(generics.RetrieveAPIView):
+    """Sibgle Flight view."""
+
+    queryset = Flight.objects.all()
+    serializer_class = FlightSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve flight based on its ID."""
+        flight_id = kwargs.get("pk")
+        flight = self.get_object()
+        serializer = self.get_serializer(flight)
+        return Response(serializer.data)
+
+
 class FlightSearch(generics.ListAPIView):
     """Flight filter."""
 

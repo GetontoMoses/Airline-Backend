@@ -11,6 +11,7 @@ from .views import (
    BookingView,
    bookingInfo,
    UserProfile,
+   SingleFlight
 )
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     path("login/", UserLoginView.as_view(), name="user_login"),
     path("user/<int:pk>/", UserProfile.as_view(), name="user-profile"),
     path("flights/", FlightList.as_view(), name="flight_list"),
+    path("flight/<int:pk>/", SingleFlight.as_view(), name="flight_detail"),
     path("search/", FlightSearch.as_view(), name="flight_detail"),
     path("book/", BookingView.as_view(), name="booking_details"),
     path("booking/<int:user>/", bookingInfo.as_view(), name="booking_details"),

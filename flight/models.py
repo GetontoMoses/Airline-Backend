@@ -11,6 +11,7 @@ class Flight(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     capacity = models.IntegerField()
+    terminal = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
@@ -25,6 +26,8 @@ class Booking(models.Model):
     infants = models.IntegerField(null=True)
     flight_class = models.CharField(max_length=20)
     date_booked = models.DateTimeField(auto_now_add=True)
+    Passport_number = models.CharField(max_length=100, null=True)
+    Phone_number = models.IntegerField(null=True)
 
     def __str__(self):
         return f"{self.user} passengers on {self.flight} at {self.date_booked}"
